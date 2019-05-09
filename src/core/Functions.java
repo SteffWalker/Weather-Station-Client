@@ -13,6 +13,9 @@ import java.net.SocketException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -49,29 +52,47 @@ public class Functions {
                 file.close();
             }
         } else {
-            json.put("stationId", UUID.randomUUID().toString());
+            json.put("stationId", identifier.getString("stationId"));
         }
         json.put("lastContact", String.valueOf(date.getTime()));
         json.put("method", "registerStation");
+
+        new Thread() {
+            public void run() {
+                updateData();
+            }
+        }.start();
+        
         try {
             Reciever.sendData(json);
         } catch (InterruptedException e) {
             System.out.println(e);
         }
+
     }
 
-    public static void updateStationValues() throws SocketException, IOException {
-        JSONObject json = new JSONObject();
-        Date date = new Date();
-        JSONObject identifier = getIdentifier();
+    public static void updateData() {
+        {
+            JSONObject json = new JSONObject();
+            Date date = new Date();
+            StationClient client = new StationClient();
+            JSONObject identifier = getIdentifier();
 
-        json.put("stationId", identifier.getString("stationId"));
-        json.put("lastContact", date.getTime());
-        json.put("method", "updateStationValues");
-        try {
-            Reciever.sendData(json);
-        } catch (InterruptedException e) {
-            System.out.println(e);
+            if (!identifier.getString("stationId").isEmpty()) {
+
+                json.put("stationId", identifier.getString("stationId"));
+                json.put("stationData", client.generateData());
+                json.put("lastContact", date.getTime());
+                json.put("method", "updateStationValues");
+
+                System.out.println("OKe");
+
+                try {
+                    Reciever.sendData(json);
+                } catch (InterruptedException e) {
+                    System.out.println(e);
+                }
+            }
         }
     }
 }

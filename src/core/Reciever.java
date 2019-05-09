@@ -1,12 +1,15 @@
 package core;
 
 import java.io.PrintWriter;
-import java.net.NetworkInterface;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 import org.json.JSONObject;
+
+/**
+ *
+ * @author N0741707
+ */
 
 public class Reciever {
 
