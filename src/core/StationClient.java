@@ -14,13 +14,13 @@ import org.json.JSONObject;
 public class StationClient {
 
     private double longitude, latitude, temp, humidity, ultraviolet, windDir, windChill, heatIndex, precipitation,
-                	soilPH, windSpeed, dewPoint, bmPressure;
+            soilPH, windSpeed, dewPoint, bmPressure;
 
     public StationClient() {
-    	
+
         longitude = (Math.random() * ((180 - -180) + 1)) + -180;
         latitude = (Math.random() * ((90 - -90) + 1)) + -90;
-        humidity = (Math.random() * ((100 ) + 1));
+        humidity = (Math.random() * ((100) + 1));
         temp = (Math.random() * ((135 - -130) + 1)) + -130; //  Degrees fahrenheit.
         ultraviolet = (Math.random() * ((11) + 1));
         windDir = (Math.random() * ((360) + 1));        // Degrees clockwise from North.
@@ -30,19 +30,23 @@ public class StationClient {
         soilPH = (Math.random() * ((14) + 1));
         dewPoint = (Math.random() * ((90) + 1));    //  Degrees fahrenheit.
         bmPressure = (Math.random() * ((30 - 20) + 1)) + 20;    //  Pressure in inches Hg
-
-        heatIndex = -42.379 + 2.04901523*temp + 10.14333127*humidity - .22475541*temp*humidity - .00683783*temp*temp -
-                    .05481717*humidity*humidity + .00122874*temp*temp*humidity + .00085282*temp*humidity*humidity -
-                    .00000199*temp*temp*humidity*humidity;
     }
 
     public JSONObject generateData() {
         JSONObject clientData = new JSONObject();
 
+        clientData.put("longitude", String.valueOf(this.longitude));
         clientData.put("temp", String.valueOf(this.temp));
         clientData.put("humidity", String.valueOf(this.humidity));
         clientData.put("latitude", String.valueOf(this.latitude));
-        clientData.put("longitude", String.valueOf(this.longitude));
+        clientData.put("ultraviolet", String.valueOf(this.ultraviolet));
+        clientData.put("windDir", String.valueOf(this.windDir));
+        clientData.put("windSpeed", String.valueOf(this.windSpeed));
+        clientData.put("windChill", String.valueOf(this.windChill));
+        clientData.put("precipitation", String.valueOf(this.precipitation));
+        clientData.put("soilPH", String.valueOf(this.soilPH));
+        clientData.put("dewPoint", String.valueOf(this.dewPoint));
+        clientData.put("bmPressure", String.valueOf(this.bmPressure));
 
         return clientData;
 
