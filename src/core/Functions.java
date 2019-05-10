@@ -5,6 +5,7 @@
  */
 package core;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,14 +48,14 @@ public class Functions {
 
             json.put("stationId", UUID.randomUUID().toString());
 
-            //System.out.println(Functions.class.getResource("../identifier.json").toString());
-            FileWriter file = new FileWriter("C:\\Users\\Callum\\Documents\\WeatherStation\\src\\identifier.json");
+        String file = new File("src/identifier.json").getAbsolutePath();
+        FileWriter fileWriter = new FileWriter(file);
             try {
-                file.write(json.toString());
+                fileWriter.write(json.toString());
             } catch (IOException e) {
             } finally {
-                file.flush();
-                file.close();
+                fileWriter.flush();
+                fileWriter.close();
             }
         } else {
             json.put("stationId", identifier.getString("stationId"));
@@ -87,7 +88,7 @@ public class Functions {
 
                 json.put("stationId", identifier.getString("stationId"));
                 json.put("stationData", client.generateData());
-                json.put("lastContact", date.getTime());
+                json.put("lastContact", String.valueOf(date.getTime()));
                 json.put("method", "updateStationValues");
 
                 new Thread() {
