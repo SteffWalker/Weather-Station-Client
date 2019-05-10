@@ -1,16 +1,20 @@
 package core;
 
+import static core.Functions.scheduleUpdate;
+import static core.Functions.timer;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import org.json.JSONObject;
 
 /**
  *
  * @author N0741707
  */
-
 public class Reciever {
 
     private static String serverAddress;
@@ -18,7 +22,7 @@ public class Reciever {
     private static PrintWriter out;
     private static String message = "";
     public static CountDownLatch latch = new CountDownLatch(1);
-    
+
     public static void startListener() throws Exception {
         serverAddress = "localhost";
 

@@ -12,6 +12,8 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -24,6 +26,8 @@ import org.json.JSONTokener;
  * @author N0741707
  */
 public class Functions {
+
+    public static Timer timer = new Timer();
 
     public static JSONObject getIdentifier() throws NullPointerException {
 
@@ -43,6 +47,7 @@ public class Functions {
 
             json.put("stationId", UUID.randomUUID().toString());
 
+            //System.out.println(Functions.class.getResource("../identifier.json").toString());
             FileWriter file = new FileWriter("C:\\Users\\Callum\\Documents\\WeatherStation\\src\\identifier.json");
             try {
                 file.write(json.toString());
@@ -57,22 +62,22 @@ public class Functions {
         json.put("lastContact", String.valueOf(date.getTime()));
         json.put("method", "registerStation");
 
-        new Thread() {
-            public void run() {
-                updateData();
-            }
-        }.start();
-        
+        scheduleUpdate();
+
         try {
             Reciever.sendData(json);
         } catch (InterruptedException e) {
             System.out.println(e);
         }
-
     }
 
-    public static void updateData() {
-        {
+    static void scheduleUpdate() {
+        timer.scheduleAtFixedRate(updater, 10000, 10000);
+    }
+
+    static TimerTask updater = new TimerTask() {
+        @Override
+        public void run() {
             JSONObject json = new JSONObject();
             Date date = new Date();
             StationClient client = new StationClient();
@@ -85,14 +90,16 @@ public class Functions {
                 json.put("lastContact", date.getTime());
                 json.put("method", "updateStationValues");
 
-                System.out.println("OKe");
-
-                try {
-                    Reciever.sendData(json);
-                } catch (InterruptedException e) {
-                    System.out.println(e);
-                }
+                new Thread() {
+                    public void run() {
+                        try {
+                            Reciever.sendData(json);
+                        } catch (InterruptedException e) {
+                            System.out.println(e);
+                        }
+                    }
+                }.start();
             }
         }
-    }
+    };
 }
